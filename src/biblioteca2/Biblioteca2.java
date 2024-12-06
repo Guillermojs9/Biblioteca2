@@ -311,37 +311,50 @@ public class Biblioteca2 {
             int opcion = LeerDatosTeclado.leerInt("Introduzca una opción: ", 0, 3);
             switch (opcion) {
                 case INSERTAR_CATEGORIA:
-                    String categoriaInsert = LeerDatosTeclado.leerString("Introduzca una nueva categoría:");
-                    boolean insert = CATEGORIA_DAO.insertarCategoria(categoriaInsert);
-                    if (CATEGORIA_DAO.existeCategoria(categoriaInsert)) {
-                        if (insert) {
-                            categorias.add(categoriaInsert);
-                            System.out.println("Se ha insertado la categoría");
-                        }
-                    } else {
-                        System.out.println("Esa categoría ya existe, no se puede insertar");
-                    }
+                    insertarCategoria();
                     break;
                 case MOSTRAR_CATEGORIAS:
                     mostrarCategorias();
                     break;
                 case ELIMINAR_CATEGORIA:
-                    mostrarCategorias();
-                    String categoriaDelete = LeerDatosTeclado.leerString("Introduzca el nombre de la categoría para borrar:");
-                    boolean delete = CATEGORIA_DAO.eliminarCategoria(categoriaDelete);
-                    if (!CATEGORIA_DAO.existeCategoria(categoriaDelete)) {
-                        if (delete) {
-                            categorias.remove(categoriaDelete);
-                            System.out.println("Se ha borrado la la categoría");
-                        }
-                    } else {
-                        System.out.println("La categoría introducida no existe");
-                    }
+                    eliminarCategoria();
                     break;
                 case SALIR:
                     salir = true;
             }
         } while (!salir);
     }
+
+    public static void insertarCategoria() {
+    String categoriaInsert = LeerDatosTeclado.leerString("Introduzca una nueva categoría:");
+    if (CATEGORIA_DAO.existeCategoria(categoriaInsert)) {
+        System.out.println("Esa categoría ya existe, no se puede insertar.");
+    } else {
+        boolean insert = CATEGORIA_DAO.insertarCategoria(categoriaInsert);
+        if (insert) {
+            categorias.add(categoriaInsert);
+            System.out.println("Se ha insertado la categoría.");
+        } else {
+            System.out.println("Ocurrió un error al insertar la categoría.");
+        }
+    }
+}
+
+    public static void eliminarCategoria() {
+    mostrarCategorias();
+    String categoriaDelete = LeerDatosTeclado.leerString("Introduzca el nombre de la categoría para borrar:");
+    if (CATEGORIA_DAO.existeCategoria(categoriaDelete)) {
+        boolean delete = CATEGORIA_DAO.eliminarCategoria(categoriaDelete);
+        if (delete) {
+            categorias.remove(categoriaDelete);
+            System.out.println("Se ha borrado la categoría.");
+        } else {
+            System.out.println("Ocurrió un error al intentar borrar la categoría.");
+        }
+    } else {
+        System.out.println("La categoría introducida no existe.");
+    }
+}
+
 
 }
