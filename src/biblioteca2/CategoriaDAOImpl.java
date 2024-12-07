@@ -3,11 +3,11 @@ package biblioteca2;
 import java.util.ArrayList;
 import java.sql.*;
 
-public class CategoriaDAOc implements CategoriaDAO {
+public class CategoriaDAOImpl implements CategoriaDAO {
 
     private Connection con;
 
-    public CategoriaDAOc(Connection con) {
+    public CategoriaDAOImpl(Connection con) {
         this.con = con;
     }
 
@@ -55,7 +55,7 @@ public class CategoriaDAOc implements CategoriaDAO {
             return false;
         }
     }
-    
+
     @Override
     public boolean existeCategoria(String categoria) {
         try {
