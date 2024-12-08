@@ -29,6 +29,7 @@ public class Biblioteca2 {
     private static final CategoriaDAOImpl CATEGORIA_DAO = new CategoriaDAOImpl(CON);
     private static final LibroDAOImpl LIBRO_DAO = new LibroDAOImpl(CON);
     private static final UsuarioDAOImpl USUARIO_DAO = new UsuarioDAOImpl(CON);
+    private static final PrestamoDAOImpl PRESTAMO_DAO = new PrestamoDAOImpl(CON);
     private static final int VACIAR_TABLAS = 1;
     private static final int RELLENAR_CATEGORIAS = 2;
     private static final int CARGAR_FICHERO = 3;
@@ -56,6 +57,8 @@ public class Biblioteca2 {
     private static final int ELIMINAR_USUARIO = 4;
     private static final int MODIFICAR_NOMBRE = 1;
     private static final int MODIFICAR_APELLIDOS = 2;
+    private static final int PRESTAR_LIBRO = 1;
+    private static final int DEVOLVER_LIBRO = 2;
     private static final int SALIR = 0;
     private static final String[] OPCIONES_MENU_PRINCIPAL
             = {
@@ -70,6 +73,8 @@ public class Biblioteca2 {
     private static ArrayList<String> categorias = CATEGORIA_DAO.obtenerCategorias();
     private static HashMap<Integer, Libro> libros = LIBRO_DAO.obtenerLibros();
     private static HashMap<Integer, Usuario> usuarios = USUARIO_DAO.obtenerUsuarios();
+    private static HashMap<Integer, Libro> librosLibres = PRESTAMO_DAO.obtenerLibrosLibres();
+    private static HashMap<Integer, Libro> librosPrestados = PRESTAMO_DAO.obtenerLibrosPrestados();
     private static final String[] MENU_GESTION
             = {
                 "Salir",
@@ -312,6 +317,7 @@ public class Biblioteca2 {
                     gestionLibros();
                     break;
                 case GESTION_PRESTAMOS:
+                    gestionPrestamos();
                     break;
                 case GESTION_USUARIOS:
                     gestionUsuarios();
@@ -320,6 +326,84 @@ public class Biblioteca2 {
                     salir = true;
             }
         } while (!salir);
+    }
+
+    public static void gestionPrestamos() {
+        boolean salir = false;
+        do {
+            mostrarMenuGestionPrestamos();
+            int opcion = LeerDatosTeclado.leerInt("Introduzca una opción", 0, 2);
+            switch (opcion) {
+                case PRESTAR_LIBRO:
+                    prestarLibro();
+                    break;
+                case DEVOLVER_LIBRO:
+                    devolverLibro();
+                    break;
+                case SALIR:
+                    salir = true;
+                    break;
+            }
+        } while (!salir);
+    }
+
+    public static void devolverLibro() {
+        mostraHashLibrosPrestados();
+        int idLibro = LeerDatosTeclado.leerInt("Introduzca el ID de libro que quiere devolver", 1);
+        if (librosPrestados.containsKey(idLibro)) {
+            Libro libro = librosPrestados.get(idLibro);
+            boolean devolver = PRESTAMO_DAO.devolverLibro(idLibro);
+            if (devolver) {
+                librosLibres.put(idLibro, libro);
+                System.out.println(libro);
+                librosPrestados.remove(idLibro);
+                System.out.println("Se ha devuelto el libro");
+            }
+        } else {
+            System.out.println("No existe ningún libro prestado con ese ID");
+        }
+    }
+
+    public static void prestarLibro() {
+        mostrarLibrosLibres();
+        int idLibro = LeerDatosTeclado.leerInt("Introduzca el ID de libro que quiere prestar", 1);
+        if (librosLibres.containsKey(idLibro)) {
+            Libro libro = librosLibres.get(idLibro);
+            consultarUsuarios();
+            int idUsuario = LeerDatosTeclado.leerInt("Introduzca el ID del usuario al que prestar el libro", 1);
+            if (usuarios.containsKey(idUsuario)) {
+                boolean insert = PRESTAMO_DAO.prestarLibro(idLibro, idUsuario);
+                if (insert) {
+                    librosPrestados.put(idLibro, libro);
+                    librosLibres.remove(idLibro);
+                    System.out.println("El libro se ha prestado");
+                }
+            } else {
+                System.out.println("No existe ningún usuario con ese ID");
+            }
+        } else {
+            System.out.println("No existe ningún libro libre con ese ID");
+        }
+    }
+
+    public static void mostraHashLibrosPrestados() {
+        for (Map.Entry<Integer, Libro> entry : librosPrestados.entrySet()) {
+            Integer id = entry.getKey();
+            Libro libro = entry.getValue();
+            System.out.println("ID: " + id + ", " + libro);
+        }
+    }
+
+    public static void mostrarLibrosLibres() {
+        for (Map.Entry<Integer, Libro> entry : librosLibres.entrySet()) {
+            Integer id = entry.getKey();
+            Libro libro = entry.getValue();
+            System.out.println("ID: " + id + ", " + libro);
+        }
+    }
+
+    public static void mostrarMenuGestionPrestamos() {
+        System.out.println("0. Salir \n1. Prestar libro\n2. Devolver libro");
     }
 
     public static void mostrarMenuGestionUsuarios() {
@@ -388,11 +472,11 @@ public class Biblioteca2 {
                 break;
         }
     }
-    
+
     public static void mostrarMenuModificarUsuarios() {
         System.out.println("1. Modificar nombre\n2. Modificar apellidos");
     }
-    
+
     public static void gestionUsuarios() {
         boolean salir = false;
         do {
