@@ -28,6 +28,7 @@ public class Biblioteca2 {
     private static final Connection CON = ConexionSQL.getInstance();
     private static final CategoriaDAOImpl CATEGORIA_DAO = new CategoriaDAOImpl(CON);
     private static final LibroDAOImpl LIBRO_DAO = new LibroDAOImpl(CON);
+    private static final UsuarioDAOImpl USUARIO_DAO = new UsuarioDAOImpl(CON);
     private static final int VACIAR_TABLAS = 1;
     private static final int RELLENAR_CATEGORIAS = 2;
     private static final int CARGAR_FICHERO = 3;
@@ -49,6 +50,12 @@ public class Biblioteca2 {
     private static final int MODIFICAR_AUTOR = 2;
     private static final int MODIFICAR_EDITORIAL = 3;
     private static final int MODIFICAR_CATEGORIA = 4;
+    private static final int INSERTAR_USUARIO = 1;
+    private static final int CONSULTAR_USUARIOS = 2;
+    private static final int MODIFICAR_USUARIO = 3;
+    private static final int ELIMINAR_USUARIO = 4;
+    private static final int MODIFICAR_NOMBRE = 1;
+    private static final int MODIFICAR_APELLIDOS = 2;
     private static final int SALIR = 0;
     private static final String[] OPCIONES_MENU_PRINCIPAL
             = {
@@ -62,6 +69,7 @@ public class Biblioteca2 {
             };
     private static ArrayList<String> categorias = CATEGORIA_DAO.obtenerCategorias();
     private static HashMap<Integer, Libro> libros = LIBRO_DAO.obtenerLibros();
+    private static HashMap<Integer, Usuario> usuarios = USUARIO_DAO.obtenerUsuarios();
     private static final String[] MENU_GESTION
             = {
                 "Salir",
@@ -306,9 +314,106 @@ public class Biblioteca2 {
                 case GESTION_PRESTAMOS:
                     break;
                 case GESTION_USUARIOS:
+                    gestionUsuarios();
                     break;
                 case SALIR:
                     salir = true;
+            }
+        } while (!salir);
+    }
+
+    public static void mostrarMenuGestionUsuarios() {
+        System.out.println("0. Salir \n1. Insertar nuevo usuario\n2. Consultar usuarios\n3. Modificar un usuario\n4. Eliminar un usuario");
+    }
+
+    public static void eliminarUsuario() {
+        consultarUsuarios();
+        int idUsuarioDelete = LeerDatosTeclado.leerInt("Introduzca el ID del usuario que desea eliminar: ", 0);
+        boolean delete = USUARIO_DAO.eliminarUsuario(idUsuarioDelete);
+        if (delete) {
+            usuarios.remove(idUsuarioDelete);
+            System.out.println("El usuario se ha eliminado");
+        } else {
+            System.out.println("No existe ningún usuario con ese ID");
+        }
+    }
+
+    public static void consultarUsuarios() {
+        for (Map.Entry<Integer, Usuario> entry : usuarios.entrySet()) {
+            Integer id = entry.getKey();
+            Usuario usuario = entry.getValue();
+            System.out.println("ID: " + id + ", " + usuario);
+        }
+    }
+
+    public static void insertarUsuario() {
+        String nombre = LeerDatosTeclado.leerString("Introduzca el nombre de usuario:");
+        String apellidos = LeerDatosTeclado.leerString("Introduzca los apellidos del usuario:");
+        Usuario usuarioInsert = new Usuario(nombre, apellidos);
+        boolean insert = USUARIO_DAO.insertarUsuario(usuarioInsert);
+        if (insert) {
+            int nuevoId = USUARIO_DAO.obtenerUltimoId();
+            usuarios.put(nuevoId, usuarioInsert);
+            System.out.println("Se ha insertado el usuario");
+        } else {
+            System.out.println("Error al insertar el usuario");
+        }
+    }
+
+    public static void modificarUsuario() {
+        consultarUsuarios();
+        int idUsuarioUpdate = LeerDatosTeclado.leerInt("Introduzca el ID del usuario que desea modificar: ", 0);
+        mostrarMenuModificarUsuarios();
+        int opcion = LeerDatosTeclado.leerInt("Introduzca una opción:", 0, 2);
+        switch (opcion) {
+            case MODIFICAR_NOMBRE:
+                String nuevoNombre = LeerDatosTeclado.leerString("Introduzca el nuevo nombre: ");
+                if (USUARIO_DAO.modificarUsuario("nombre", nuevoNombre, idUsuarioUpdate)) {
+                    Usuario usuarioActualizado = usuarios.get(idUsuarioUpdate);
+                    usuarioActualizado.setNombre(nuevoNombre);
+                    System.out.println("Nombre actualizado correctamente.");
+                } else {
+                    System.out.println("Error al actualizar el nombre.");
+                }
+                break;
+            case MODIFICAR_APELLIDOS:
+                String nuevosApellidos = LeerDatosTeclado.leerString("Introduzca los nuevos apellidos: ");
+                if (USUARIO_DAO.modificarUsuario("apellidos", nuevosApellidos, idUsuarioUpdate)) {
+                    Usuario usuarioActualizado = usuarios.get(idUsuarioUpdate);
+                    usuarioActualizado.setApellidos(nuevosApellidos);
+                    System.out.println("Apellidos actualizados correctamente.");
+                } else {
+                    System.out.println("Error al actualizar los apellidos.");
+                }
+                break;
+        }
+    }
+    
+    public static void mostrarMenuModificarUsuarios() {
+        System.out.println("1. Modificar nombre\n2. Modificar apellidos");
+    }
+    
+    public static void gestionUsuarios() {
+        boolean salir = false;
+        do {
+            mostrarMenuGestionUsuarios();
+            int opcion = LeerDatosTeclado.leerInt("Introduzca una opción:", 0, 4);
+            switch (opcion) {
+                case INSERTAR_USUARIO:
+                    insertarUsuario();
+                    break;
+                case CONSULTAR_USUARIOS:
+                    consultarUsuarios();
+                    break;
+                case MODIFICAR_USUARIO:
+                    modificarUsuario();
+                    break;
+                case ELIMINAR_USUARIO:
+                    eliminarUsuario();
+                    break;
+                case SALIR:
+                    salir = true;
+                    break;
             }
         } while (!salir);
     }
@@ -343,64 +448,59 @@ public class Biblioteca2 {
     }
 
     public static void mostrarMenuModificarLibros() {
-        System.out.println("0. Salir \n1. Modificar título\n2. Modificar autor\n3. Modificar editorial\n4. Modificar categoría");
+        System.out.println("1. Modificar título\n2. Modificar autor\n3. Modificar editorial\n4. Modificar categoría");
     }
 
     public static void modificarLibro() {
         consultarLibros();
         int idLibroUpdate = LeerDatosTeclado.leerInt("Introduzca el ID del libro que desea modificar: ", 0);
-        boolean salir = false;
-        do {
-            mostrarMenuModificarLibros();
-            int opcion = LeerDatosTeclado.leerInt("Introduzca una opción:", 0, 4);
-            String nuevoDato;
-            switch (opcion) {
-                case MODIFICAR_TITULO:
-                    nuevoDato = LeerDatosTeclado.leerString("Introduzca el nuevo título: ");
-                    if (LIBRO_DAO.modificarLibro("titulo", nuevoDato, idLibroUpdate)) {
-                        Libro libroActualizado = libros.get(idLibroUpdate);
-                        libroActualizado.setNombre(nuevoDato);
-                        System.out.println("Título actualizado correctamente.");
-                    } else {
-                        System.out.println("Error al actualizar el título.");
-                    }
-                    break;
-                case MODIFICAR_AUTOR:
-                    nuevoDato = LeerDatosTeclado.leerString("Introduzca el nuevo autor: ");
-                    if (LIBRO_DAO.modificarLibro("autor", nuevoDato, idLibroUpdate)) {
-                        Libro libroActualizado = libros.get(idLibroUpdate);
-                        libroActualizado.setAutor(nuevoDato);
-                        System.out.println("Autor actualizado correctamente.");
-                    } else {
-                        System.out.println("Error al actualizar el autor.");
-                    }
-                    break;
-                case MODIFICAR_EDITORIAL:  // Modificar editorial
-                    nuevoDato = LeerDatosTeclado.leerString("Introduzca la nueva editorial: ");
-                    if (LIBRO_DAO.modificarLibro("editorial", nuevoDato, idLibroUpdate)) {
-                        Libro libroActualizado = libros.get(idLibroUpdate);
-                        libroActualizado.setEditorial(nuevoDato);
-                        System.out.println("Editorial actualizada correctamente.");
-                    } else {
-                        System.out.println("Error al actualizar la editorial.");
-                    }
-                    break;
-                case MODIFICAR_CATEGORIA:
-                    mostrarCategorias();
-                    int categoria = LeerDatosTeclado.leerInt("Selecciona la nueva categoría", 1, categorias.size());
-                    if (LIBRO_DAO.modificarLibro("categoria", Integer.toString(categoria), idLibroUpdate)) {
-                        Libro libroActualizado = libros.get(idLibroUpdate);
-                        libroActualizado.setCategoria(categoria);
-                        System.out.println("Categoría actualizada correctamente.");
-                    } else {
-                        System.out.println("Error al actualizar la categoría.");
-                    }
-                    break;
-                case SALIR:
-                    salir = true;
-                    break;
-            }
-        } while (!salir);
+
+        mostrarMenuModificarLibros();
+        int opcion = LeerDatosTeclado.leerInt("Introduzca una opción:", 0, 4);
+        String nuevoDato;
+        switch (opcion) {
+            case MODIFICAR_TITULO:
+                nuevoDato = LeerDatosTeclado.leerString("Introduzca el nuevo título: ");
+                if (LIBRO_DAO.modificarLibro("titulo", nuevoDato, idLibroUpdate)) {
+                    Libro libroActualizado = libros.get(idLibroUpdate);
+                    libroActualizado.setNombre(nuevoDato);
+                    System.out.println("Título actualizado correctamente.");
+                } else {
+                    System.out.println("Error al actualizar el título.");
+                }
+                break;
+            case MODIFICAR_AUTOR:
+                nuevoDato = LeerDatosTeclado.leerString("Introduzca el nuevo autor: ");
+                if (LIBRO_DAO.modificarLibro("autor", nuevoDato, idLibroUpdate)) {
+                    Libro libroActualizado = libros.get(idLibroUpdate);
+                    libroActualizado.setAutor(nuevoDato);
+                    System.out.println("Autor actualizado correctamente.");
+                } else {
+                    System.out.println("Error al actualizar el autor.");
+                }
+                break;
+            case MODIFICAR_EDITORIAL:
+                nuevoDato = LeerDatosTeclado.leerString("Introduzca la nueva editorial: ");
+                if (LIBRO_DAO.modificarLibro("editorial", nuevoDato, idLibroUpdate)) {
+                    Libro libroActualizado = libros.get(idLibroUpdate);
+                    libroActualizado.setEditorial(nuevoDato);
+                    System.out.println("Editorial actualizada correctamente.");
+                } else {
+                    System.out.println("Error al actualizar la editorial.");
+                }
+                break;
+            case MODIFICAR_CATEGORIA:
+                mostrarCategorias();
+                int categoria = LeerDatosTeclado.leerInt("Selecciona la nueva categoría", 1, categorias.size());
+                if (LIBRO_DAO.modificarLibro("categoria", Integer.toString(categoria), idLibroUpdate)) {
+                    Libro libroActualizado = libros.get(idLibroUpdate);
+                    libroActualizado.setCategoria(categoria);
+                    System.out.println("Categoría actualizada correctamente.");
+                } else {
+                    System.out.println("Error al actualizar la categoría.");
+                }
+                break;
+        }
     }
 
     public static void eliminarLibro() {

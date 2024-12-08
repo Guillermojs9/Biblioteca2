@@ -15,10 +15,10 @@ public class LibroDAOImpl implements LibroDAO {
     public HashMap<Integer, Libro> obtenerLibros() {
         HashMap<Integer, Libro> libros = new HashMap<>();
         try {
-            String consulta = "SELECT * FROM libro;"; // Consulta SQL
-            ResultSet rs = con.createStatement().executeQuery(consulta); // Ejecutar la consulta
+            String consulta = "SELECT * FROM libro;";
+            ResultSet rs = con.createStatement().executeQuery(consulta);
             while (rs.next()) {
-                int id = rs.getInt("id"); // Obtener el ID del libro (clave única)
+                int id = rs.getInt("id");
                 String nombre = rs.getString("nombre");
                 String autor = rs.getString("autor");
                 String editorial = rs.getString("editorial");
