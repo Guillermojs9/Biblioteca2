@@ -3,14 +3,27 @@ package biblioteca2;
 import java.sql.*;
 import java.util.HashMap;
 
+/**
+ * Implementación de la interfaz LibroDAO.
+ */
 public class LibroDAOImpl implements LibroDAO {
 
     private Connection con;
 
+    /**
+     * Constructor de la clase. Recibe una conexión a la base de datos para interactuar con ella.
+     * 
+     * @param con Conexión a la base de datos.
+     */
     public LibroDAOImpl(Connection con) {
         this.con = con;
     }
 
+    /**
+     * Obtiene todos los libros de la base de datos.
+     * 
+     * @return Un HashMap donde la clave es el ID del libro y el valor es el objeto Libro.
+     */
     @Override
     public HashMap<Integer, Libro> obtenerLibros() {
         HashMap<Integer, Libro> libros = new HashMap<>();
@@ -32,6 +45,12 @@ public class LibroDAOImpl implements LibroDAO {
         return libros;
     }
 
+    /**
+     * Inserta un nuevo libro en la base de datos.
+     * 
+     * @param libroInsert El libro que se desea insertar.
+     * @return true si el libro se insertó correctamente, false en caso contrario.
+     */
     @Override
     public boolean insertarLibro(Libro libroInsert) {
         try {
@@ -49,6 +68,11 @@ public class LibroDAOImpl implements LibroDAO {
         }
     }
 
+    /**
+     * Obtiene el ID del último libro registrado en la base de datos.
+     * 
+     * @return El ID del último libro.
+     */
     @Override
     public int obtenerUltimoId() {
         int id = 0;
@@ -64,6 +88,12 @@ public class LibroDAOImpl implements LibroDAO {
         return id;
     }
 
+    /**
+     * Elimina un libro de la base de datos según su ID.
+     * 
+     * @param libroDelete El ID del libro a eliminar.
+     * @return true si el libro fue eliminado con éxito, false en caso contrario.
+     */
     @Override
     public boolean eliminarLibro(int libroDelete) {
         try {
@@ -78,6 +108,14 @@ public class LibroDAOImpl implements LibroDAO {
         }
     }
 
+    /**
+     * Modifica los detalles de un libro en la base de datos.
+     * 
+     * @param accion La acción que se va a realizar.
+     * @param nuevoDato El nuevo dato que se quiere establecer.
+     * @param idLibro El ID del libro que se desea modificar.
+     * @return true si la modificación fue exitosa, false en caso contrario.
+     */
     @Override
     public boolean modificarLibro(String accion, String nuevoDato, int idLibro) {
         boolean exito = false;
@@ -115,3 +153,4 @@ public class LibroDAOImpl implements LibroDAO {
     }
 
 }
+

@@ -3,14 +3,29 @@ package biblioteca2;
 import java.sql.*;
 import java.util.HashMap;
 
+/**
+ * Implementación de la interfaz UsuarioDAO.
+ */
 public class UsuarioDAOImpl implements UsuarioDAO {
 
     private Connection con;
 
+    /**
+     * Constructor de la clase UsuarioDAOImpl. Recibe una conexión a la base de
+     * datos para poder interactuar con ella.
+     *
+     * @param con Conexión a la base de datos.
+     */
     public UsuarioDAOImpl(Connection con) {
         this.con = con;
     }
 
+    /**
+     * Obtiene todos los usuarios de la base de datos.
+     *
+     * @return Un HashMap donde la clave es el ID del usuario y el valor es el
+     * objeto Usuario.
+     */
     @Override
     public HashMap<Integer, Usuario> obtenerUsuarios() {
         HashMap<Integer, Usuario> usuarios = new HashMap<>();
@@ -30,6 +45,14 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         return usuarios;
     }
 
+    /**
+     * Inserta un nuevo usuario en la base de datos.
+     *
+     * @param usuarioInsert El objeto Usuario que se desea insertar en la base
+     * de datos.
+     * @return true si el usuario fue insertado correctamente, false en caso
+     * contrario.
+     */
     @Override
     public boolean insertarUsuario(Usuario usuarioInsert) {
         try {
@@ -45,6 +68,11 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         }
     }
 
+    /**
+     * Obtiene el ID del último usuario registrado en la base de datos.
+     *
+     * @return El ID del último usuario insertado.
+     */
     @Override
     public int obtenerUltimoId() {
         int id = 0;
@@ -60,6 +88,13 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         return id;
     }
 
+    /**
+     * Elimina un usuario de la base de datos según su ID.
+     *
+     * @param idUsuarioDelete El ID del usuario que se desea eliminar.
+     * @return true si el usuario fue eliminado con éxito, false en caso
+     * contrario.
+     */
     @Override
     public boolean eliminarUsuario(int idUsuarioDelete) {
         try {
@@ -74,9 +109,18 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         }
     }
 
+    /**
+     * Modifica un dato específico de un usuario en la base de datos.
+     *
+     * @param accion La acción que se va a realizar (puede ser "nombre" o
+     * "apellidos").
+     * @param nuevoDato El nuevo dato que se desea asignar al usuario.
+     * @param idUsuario El ID del usuario que se desea modificar.
+     * @return true si la modificación fue exitosa, false en caso contrario.
+     */
     @Override
     public boolean modificarUsuario(String accion, String nuevoDato, int idUsuario) {
-         boolean exito = false;
+        boolean exito = false;
         try {
             String update = "";
             switch (accion) {

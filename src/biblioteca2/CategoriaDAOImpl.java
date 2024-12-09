@@ -3,14 +3,27 @@ package biblioteca2;
 import java.util.ArrayList;
 import java.sql.*;
 
+/**
+ * Implementación de la interfaz CategoriaDAO.
+ */
 public class CategoriaDAOImpl implements CategoriaDAO {
 
     private Connection con;
 
+    /**
+     * Constructor de la clase CategoriaDAOImpl.
+     *
+     * @param con Objeto Connection para interactuar con la base de datos.
+     */
     public CategoriaDAOImpl(Connection con) {
         this.con = con;
     }
 
+    /**
+     * Obtiene una lista de todas las categorías de la base de datos.
+     *
+     * @return Una lista de cadenas que representan las categorías.
+     */
     @Override
     public ArrayList<String> obtenerCategorias() {
         ArrayList<String> categorias = new ArrayList<>();
@@ -27,6 +40,12 @@ public class CategoriaDAOImpl implements CategoriaDAO {
         return categorias;
     }
 
+    /**
+     * Inserta una nueva categoría en la base de datos.
+     *
+     * @param categoria El nombre de la categoría que se desea insertar.
+     * @return true si la categoría se insertó, false en caso contrario.
+     */
     @Override
     public boolean insertarCategoria(String categoria) {
         try {
@@ -39,9 +58,14 @@ public class CategoriaDAOImpl implements CategoriaDAO {
             System.out.println("Error al insertar la categoría. Error: " + ex.getMessage());
             return false;
         }
-
     }
 
+    /**
+     * Elimina una categoría de la base de datos.
+     *
+     * @param categoria El nombre de la categoría que se desea eliminar.
+     * @return true si al menos una fila fue eliminada, false en caso contrario.
+     */
     @Override
     public boolean eliminarCategoria(String categoria) {
         try {
@@ -56,6 +80,12 @@ public class CategoriaDAOImpl implements CategoriaDAO {
         }
     }
 
+    /**
+     * Verifica si una categoría existe en la base de datos.
+     *
+     * @param categoria El nombre de la categoría que se desea verificar.
+     * @return true si la categoría existe, false en caso contrario.
+     */
     @Override
     public boolean existeCategoria(String categoria) {
         try {
@@ -71,5 +101,5 @@ public class CategoriaDAOImpl implements CategoriaDAO {
         }
         return false;
     }
-
 }
+
