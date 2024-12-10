@@ -304,6 +304,10 @@ public class Biblioteca2 {
         }
     }
 
+    /**
+     * Menú que gestiona las didtintas entidades (libros, categorías, préstamos
+     * y usuarios)
+     */
     public static void menuGestionEntidades() {
         boolean salir = false;
         do {
@@ -328,6 +332,9 @@ public class Biblioteca2 {
         } while (!salir);
     }
 
+    /**
+     * Menú gestión préstamos
+     */
     public static void gestionPrestamos() {
         boolean salir = false;
         do {
@@ -347,6 +354,9 @@ public class Biblioteca2 {
         } while (!salir);
     }
 
+    /**
+     * Devuelve un libro
+     */
     public static void devolverLibro() {
         mostraHashLibrosPrestados();
         int idLibro = LeerDatosTeclado.leerInt("Introduzca el ID de libro que quiere devolver", 1);
@@ -364,6 +374,9 @@ public class Biblioteca2 {
         }
     }
 
+    /**
+     * Presta un libro
+     */
     public static void prestarLibro() {
         mostrarLibrosLibres();
         int idLibro = LeerDatosTeclado.leerInt("Introduzca el ID de libro que quiere prestar", 1);
@@ -386,6 +399,9 @@ public class Biblioteca2 {
         }
     }
 
+    /**
+     * Muestra los libros prestados
+     */
     public static void mostraHashLibrosPrestados() {
         for (Map.Entry<Integer, Libro> entry : librosPrestados.entrySet()) {
             Integer id = entry.getKey();
@@ -394,6 +410,9 @@ public class Biblioteca2 {
         }
     }
 
+    /**
+     * Muestra los libros que no están prestados
+     */
     public static void mostrarLibrosLibres() {
         for (Map.Entry<Integer, Libro> entry : librosLibres.entrySet()) {
             Integer id = entry.getKey();
@@ -402,14 +421,23 @@ public class Biblioteca2 {
         }
     }
 
+    /**
+     * Muestra las opcoines del menú gestionar prestamos
+     */
     public static void mostrarMenuGestionPrestamos() {
         System.out.println("0. Salir \n1. Prestar libro\n2. Devolver libro");
     }
 
+    /**
+     * Muestra las opcoines del menú gestionar usuarios
+     */
     public static void mostrarMenuGestionUsuarios() {
         System.out.println("0. Salir \n1. Insertar nuevo usuario\n2. Consultar usuarios\n3. Modificar un usuario\n4. Eliminar un usuario");
     }
 
+    /**
+     * Eliminar un usuario
+     */
     public static void eliminarUsuario() {
         consultarUsuarios();
         int idUsuarioDelete = LeerDatosTeclado.leerInt("Introduzca el ID del usuario que desea eliminar: ", 0);
@@ -422,6 +450,9 @@ public class Biblioteca2 {
         }
     }
 
+    /**
+     * Muestra todos los usuarios de la base de datos
+     */
     public static void consultarUsuarios() {
         for (Map.Entry<Integer, Usuario> entry : usuarios.entrySet()) {
             Integer id = entry.getKey();
@@ -430,6 +461,9 @@ public class Biblioteca2 {
         }
     }
 
+    /**
+     * Inserta un nuevo usuario
+     */
     public static void insertarUsuario() {
         String nombre = LeerDatosTeclado.leerString("Introduzca el nombre de usuario:");
         String apellidos = LeerDatosTeclado.leerString("Introduzca los apellidos del usuario:");
@@ -444,6 +478,9 @@ public class Biblioteca2 {
         }
     }
 
+    /**
+     * Modifica un atributo de un usuario (nombre o apellidos)
+     */
     public static void modificarUsuario() {
         consultarUsuarios();
         int idUsuarioUpdate = LeerDatosTeclado.leerInt("Introduzca el ID del usuario que desea modificar: ", 0);
@@ -473,10 +510,16 @@ public class Biblioteca2 {
         }
     }
 
+    /**
+     * Imprime por pantalla las opciones del menú modificar usuario
+     */
     public static void mostrarMenuModificarUsuarios() {
         System.out.println("1. Modificar nombre\n2. Modificar apellidos");
     }
 
+    /**
+     * Menú gestión usuarios
+     */
     public static void gestionUsuarios() {
         boolean salir = false;
         do {
@@ -506,6 +549,9 @@ public class Biblioteca2 {
         System.out.println("0. Salir \n1. Insertar nuevo libro\n2. Consultar libros\n3. Modificar un libro\n4. Eliminar un libro");
     }
 
+    /**
+     * Menú gestión libro
+     */
     public static void gestionLibros() {
         boolean salir = false;
         do {
@@ -531,10 +577,17 @@ public class Biblioteca2 {
         } while (!salir);
     }
 
+    /**
+     * IMprime por pantalla el menú con las opciones de modificar un libro
+     */
     public static void mostrarMenuModificarLibros() {
         System.out.println("1. Modificar título\n2. Modificar autor\n3. Modificar editorial\n4. Modificar categoría");
     }
 
+    /**
+     * Modifica un libro, se puede modificar título, autor, editorial o
+     * categoria
+     */
     public static void modificarLibro() {
         consultarLibros();
         int idLibroUpdate = LeerDatosTeclado.leerInt("Introduzca el ID del libro que desea modificar: ", 0);
@@ -587,6 +640,9 @@ public class Biblioteca2 {
         }
     }
 
+    /**
+     * Eliminar un libro.
+     */
     public static void eliminarLibro() {
         consultarLibros();
         int idLibroDelete = LeerDatosTeclado.leerInt("Introduzca el ID del libro que desea eliminar: ", 0);
@@ -599,6 +655,9 @@ public class Biblioteca2 {
         }
     }
 
+    /**
+     * Insertar un libro.
+     */
     public static void insertarLibro() {
         String nombre = LeerDatosTeclado.leerString("Introduzca el título del libro");
         String autor = LeerDatosTeclado.leerString("Introduzca el nombre del autor");
@@ -616,6 +675,9 @@ public class Biblioteca2 {
         }
     }
 
+    /**
+     * Imprime por pantalla todos los libros de la biblioteca
+     */
     public static void consultarLibros() {
         for (Map.Entry<Integer, Libro> entry : libros.entrySet()) {
             Integer id = entry.getKey();
@@ -624,10 +686,16 @@ public class Biblioteca2 {
         }
     }
 
+    /**
+     * Imprime por pantalla las opcoines del menú de categorías
+     */
     public static void mostrarMenuGestionCategorias() {
         System.out.println("0. Salir \n1. Insertar nueva categoría\n2. Consultar categorías\n3. Eliminar una categoría");
     }
 
+    /**
+     * Menú para el gestión de categorías
+     */
     public static void gestionCategorias() {
         boolean salir = false;
         do {
@@ -649,6 +717,9 @@ public class Biblioteca2 {
         } while (!salir);
     }
 
+    /**
+     * Inserta una categoría nueva
+     */
     public static void insertarCategoria() {
         String categoriaInsert = LeerDatosTeclado.leerString("Introduzca una nueva categoría:");
         if (CATEGORIA_DAO.existeCategoria(categoriaInsert)) {
@@ -664,6 +735,9 @@ public class Biblioteca2 {
         }
     }
 
+    /**
+     * Elmina una categoría
+     */
     public static void eliminarCategoria() {
         mostrarCategorias();
         String categoriaDelete = LeerDatosTeclado.leerString("Introduzca el nombre de la categoría para borrar:");
